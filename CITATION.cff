@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "ct-adaptive-engine: BKT learner model and rule-based adaptation for a critical-thinking learning game"
+type: software
+authors:
+  - family-names: "Tileubay"
+    given-names: "Alikhan"
+    affiliation: "Astana IT University"
+version: 0.1.0
+date-released: "2026-10-10"
+license: MIT
+repository-code: "https://github.com/USERNAME/ct-adaptive-engine"
+keywords:
+  - bayesian knowledge tracing
+  - adaptive learning
+  - critical thinking
+  - educational games
+references:
+  - type: article
+    authors:
+      - family-names: "Corbett"
+        given-names: "Albert T."
+      - family-names: "Anderson"
+        given-names: "John R."
+    title: "Knowledge tracing: Modeling the acquisition of procedural knowledge"
+    journal: "User Modeling and User-Adapted Interaction"
+    volume: 4
+    issue: 4
+    start: 253
+    end: 278
+    year: 1995
+    doi: "10.1007/BF01099821"
