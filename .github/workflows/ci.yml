@@ -1,0 +1,126 @@
+# Continuous integration and delivery for ct-adaptive-engine.
+#
+#   lint      -> code style and static checks (ruff)
+#   test      -> unit tests + coverage gate on 4 Python versions x 2 operating systems
+#   simulate  -> re-runs the simulation study with a fixed seed (reproducible result)
+#   build     -> builds the installable wheel and source archive
+#   release   -> on a version tag (v*), publishes a GitHub Release with the wheel
+#                and the simulation results attached (continuous delivery)
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# A newer push to the same branch cancels the run that is now outdated.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - name: Static checks
+        run: ruff check .
+      - name: Formatting
+        run: ruff format --check .
+
+  test:
+    name: Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    needs: lint
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install package with development extras
+        run: pip install -e ".[dev]"
+      - name: Run tests (fails if coverage < 85 %)
+        run: pytest --cov --cov-report=term-missing --cov-report=xml
+      - name: Upload coverage report
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+  simulate:
+    name: Reproduce simulation study
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - run: pip install ".[plot]"
+      - name: Run study with the fixed seed
+        run: ct-simulate --learners 50 --max-steps 150 --seed 42 --out results
+      - uses: actions/upload-artifact@v4
+        with:
+          name: simulation-results
+          path: results/
+
+  build:
+    name: Build package
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build
+      - run: python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build, simulate]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Package simulation results
+        run: cd artifacts && zip -r ../simulation-results.zip simulation-results
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create "${{ github.ref_name }}"
+          artifacts/dist/* simulation-results.zip
+          --title "${{ github.ref_name }}"
+          --notes-file CHANGELOG.md
