@@ -1,6 +1,6 @@
 # ct-adaptive-engine
 
-[![CI](https://github.com/USERNAME/ct-adaptive-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/ct-adaptive-engine/actions/workflows/ci.yml)
+[![CI](https://github.com/SpaceT1/ct-adaptive-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/SpaceT1/ct-adaptive-engine/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
@@ -26,7 +26,7 @@ closed-form arithmetic in pure Python.
 Python 3.10 or newer is required.
 
 ```bash
-git clone https://github.com/USERNAME/ct-adaptive-engine.git
+git clone https://github.com/SpaceT1/ct-adaptive-engine.git
 cd ct-adaptive-engine
 pip install -e ".[dev]"     # engine + tests + plotting
 ```
