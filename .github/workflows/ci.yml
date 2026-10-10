@@ -62,7 +62,7 @@ jobs:
         run: pytest --cov --cov-report=term-missing --cov-report=xml
       - name: Upload coverage report
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coverage.xml
@@ -81,7 +81,7 @@ jobs:
       - run: pip install ".[plot]"
       - name: Run study with the fixed seed
         run: ct-simulate --learners 50 --max-steps 150 --seed 42 --out results
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: simulation-results
           path: results/
@@ -97,7 +97,7 @@ jobs:
           python-version: "3.12"
       - run: pip install build
       - run: python -m build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
