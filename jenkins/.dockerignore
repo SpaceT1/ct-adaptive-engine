@@ -1,0 +1,4 @@
+# Not needed inside the Jenkins image
+.env
+.env.example
+docker-compose.yml

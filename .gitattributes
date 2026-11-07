@@ -1,0 +1,4 @@
+# Keep LF line endings on every system: the Jenkins files, the Dockerfile and the
+# shell steps are read inside Linux containers, where CRLF breaks them.
+* text=auto eol=lf
+*.png binary

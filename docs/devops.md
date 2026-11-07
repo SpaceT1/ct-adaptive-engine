@@ -82,9 +82,9 @@ The Job pulls the image from Docker Hub, so step 4 is needed first.
 minikube start --driver=docker
 docker network connect minikube jenkins      # Jenkins can now reach the cluster
 $ip = minikube ip
-kubectl config view --flatten --minify --context minikube |
-  ForEach-Object { $_ -replace 'https://127\.0\.0\.1:\d+', "https://${ip}:8443" } |
-  Set-Content -Encoding ascii minikube.kubeconfig
+$cfg = kubectl config view --flatten --minify --context minikube
+$cfg = $cfg -replace 'https://127\.0\.0\.1:\d+', "https://${ip}:8443"
+$cfg | Set-Content -Encoding ascii minikube.kubeconfig
 ```
 
 Add `minikube.kubeconfig` to Jenkins as a *Secret file* with ID
