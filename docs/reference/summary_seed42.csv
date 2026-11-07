@@ -1,0 +1,4 @@
+profile,learners,completion_rate,median_tasks_to_complete,false_mastery_rate,missed_mastery_rate
+slow,50,1.0,64.0,0.037,0.0
+average,50,1.0,46.5,0.013,0.0
+fast,50,1.0,32.0,0.003,0.0
