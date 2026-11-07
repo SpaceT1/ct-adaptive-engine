@@ -1,0 +1,13 @@
+# Pipeline engine and the stage view shown in the screenshots
+workflow-aggregator
+pipeline-stage-view
+pipeline-graph-view
+# Source control
+git
+# Test reports, credentials, timestamps in the log
+junit
+credentials-binding
+timestamper
+# Configuration as Code and the job definition
+configuration-as-code
+job-dsl

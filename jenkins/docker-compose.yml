@@ -1,0 +1,29 @@
+# Local Jenkins server for Assignment 5.
+#
+#   cd jenkins
+#   copy .env.example .env        (Windows)   |   cp .env.example .env   (macOS/Linux)
+#   docker compose up -d --build
+#   open http://localhost:8080  and log in as "admin" with the password from .env
+#
+# Jenkins uses the Docker of this computer through the Docker socket, so the
+# images it builds appear in Docker Desktop.
+services:
+  jenkins:
+    build: .
+    image: ct-jenkins:local
+    container_name: jenkins
+    # Local training setup: root inside the container is needed to use the Docker
+    # socket of Docker Desktop. Do not expose this server to the internet.
+    user: root
+    ports:
+      - "8080:8080"
+    environment:
+      JENKINS_ADMIN_PASSWORD: ${JENKINS_ADMIN_PASSWORD:?Set JENKINS_ADMIN_PASSWORD in jenkins/.env}
+      REPO_URL: ${REPO_URL:-https://github.com/SpaceT1/ct-adaptive-engine.git}
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:

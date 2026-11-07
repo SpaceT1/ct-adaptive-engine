@@ -4,6 +4,7 @@
 #   test      -> unit tests + coverage gate on 4 Python versions x 2 operating systems
 #   simulate  -> re-runs the simulation study with a fixed seed (reproducible result)
 #   build     -> builds the installable wheel and source archive
+#   docker    -> builds the Docker image and reproduces the study inside it
 #   release   -> on a version tag (v*), publishes a GitHub Release with the wheel
 #                and the simulation results attached (continuous delivery)
 
@@ -102,10 +103,26 @@ jobs:
           name: dist
           path: dist/
 
+  docker:
+    name: Docker image
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t ct-adaptive-engine:ci .
+      - name: Smoke test
+        run: docker run --rm ct-adaptive-engine:ci --version
+      - name: Reproduce the study inside the image
+        run: |
+          docker run --name study ct-adaptive-engine:ci
+          docker cp study:/home/researcher/results ./results
+          diff -u docs/reference/summary_seed42.csv results/summary.csv
+
   release:
     name: Publish GitHub Release
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build, simulate]
+    needs: [build, simulate, docker]
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -1,0 +1,41 @@
+# Jenkins Configuration as Code (JCasC).
+# Jenkins reads this file at start-up, so the server is configured the same way
+# on every computer: no setup wizard, no clicking through menus.
+jenkins:
+  systemMessage: "CI/CD for ct-adaptive-engine (Assignment 5). Configured as code: jenkins/casc.yaml"
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          name: "Administrator"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+
+# The pipeline job: it reads the Jenkinsfile from the GitHub repository.
+jobs:
+  - script: |
+      pipelineJob('ct-adaptive-engine') {
+        description('Tests, Docker image and reproducible simulation study for ct-adaptive-engine. Pipeline: Jenkinsfile in the repository.')
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('${REPO_URL}')
+                }
+                branch('*/main')
+              }
+            }
+            scriptPath('Jenkinsfile')
+            lightweight(true)
+          }
+        }
+      }

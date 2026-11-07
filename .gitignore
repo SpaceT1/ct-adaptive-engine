@@ -24,3 +24,9 @@ results/
 .vscode/
 .idea/
 .DS_Store
+
+# Jenkins secrets and pipeline output
+jenkins/.env
+reports/
+*.kubeconfig
+kubeconfig*.yaml

@@ -1,4 +1,4 @@
-# Weekly pull requests that keep the CI actions and Python tools up to date.
+# Weekly pull requests that keep the CI actions, Python tools and Docker base images up to date.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -7,5 +7,13 @@ updates:
       interval: weekly
   - package-ecosystem: pip
     directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: "/jenkins"
     schedule:
       interval: weekly
