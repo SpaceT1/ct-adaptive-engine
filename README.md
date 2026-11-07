@@ -1,4 +1,4 @@
-# ct-adaptive-engine
+# ct-adaptive-engine+
 
 [![CI](https://github.com/SpaceT1/ct-adaptive-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/SpaceT1/ct-adaptive-engine/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
