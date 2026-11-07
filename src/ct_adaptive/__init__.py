@@ -9,4 +9,4 @@ Two layers, following Chapter 2 of the thesis:
 its behaviour can be studied before any real classroom data exist.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

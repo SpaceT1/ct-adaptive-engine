@@ -6,8 +6,8 @@ authors:
   - family-names: "Tileubay"
     given-names: "Alikhan"
     affiliation: "Astana IT University"
-version: 0.1.0
-date-released: "2026-10-10"
+version: 0.2.0
+date-released: "2026-11-07"
 license: MIT
 repository-code: "https://github.com/SpaceT1/ct-adaptive-engine"
 keywords:

@@ -121,9 +121,26 @@ ruff format .         # formatting
 2. **test** – the test suite on Python 3.10–3.13 × Ubuntu and Windows (8 jobs), with an 85 % coverage gate;
 3. **simulate** – re-runs the study with seed 42 and stores the results as a downloadable artifact;
 4. **build** – builds the wheel and source archive;
-5. **release** – when a tag `v*` is pushed, publishes a GitHub Release with the wheel and the simulation results.
+5. **docker** – builds the Docker image and reproduces the study inside it;
+6. **release** – when a tag `v*` is pushed, publishes a GitHub Release with the wheel and the simulation results.
 
-Dependabot opens weekly pull requests to keep actions and tools up to date.
+Dependabot opens weekly pull requests to keep actions, tools and the Docker base image up to date.
+
+### Docker and Jenkins
+
+The study also ships as a Docker image, and a Jenkins pipeline builds and checks it:
+
+```bash
+docker build -t ct-adaptive-engine .
+docker run --rm ct-adaptive-engine        # runs the full study with seed 42
+```
+
+[`Jenkinsfile`](Jenkinsfile): lint → unit tests → Docker build → smoke test →
+reproduce the study inside the image (the result must match
+[`docs/reference/summary_seed42.csv`](docs/reference/summary_seed42.csv)) →
+optional push to Docker Hub → optional deployment to Minikube as a Kubernetes Job.
+A ready-to-run Jenkins server is in [`jenkins/`](jenkins/). Full guide:
+[`docs/devops.md`](docs/devops.md).
 
 ## Project structure
 
@@ -136,7 +153,12 @@ ct-adaptive-engine/
 │   └── cli.py            # ct-simulate command
 ├── tests/                # pytest suite, one or more tests per rule
 ├── docs/model.md         # formulas and rules
+├── docs/devops.md        # Docker image and Jenkins pipeline
 ├── .github/              # CI workflow, Dependabot, issue and PR templates
+├── Dockerfile            # container image of the study
+├── Jenkinsfile           # Jenkins CI/CD pipeline
+├── jenkins/              # local Jenkins server (Docker Compose + Configuration as Code)
+├── k8s/                  # Kubernetes Job for the optional deployment
 ├── pyproject.toml        # package metadata and tool settings
 ├── CITATION.cff          # how to cite this software
 └── LICENSE               # MIT
