@@ -9,7 +9,7 @@
 # interpreter and libraries: a result produced on one computer can be repeated
 # on any other computer that has Docker.
 
-FROM python:3.12-slim
+FROM python:3.15-slim
 
 LABEL org.opencontainers.image.title="ct-adaptive-engine" \
       org.opencontainers.image.description="BKT learner model and rule-based adaptation engine (master's thesis prototype)" \
